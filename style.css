@@ -1,8 +1,15 @@
 body {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100dvh;
+  height: 97dvh;
+}
+
+h1 {
+  position: relative;
+  right: 22rem;
+  bottom: 6rem;
 }
 button {
   display: flex;
