@@ -8,11 +8,16 @@
     <link rel="stylesheet" type="text/css" media="screen" href="style.css" />
   </head>
   <body>
-    <!-- <div class="level"> -->
-    <h1 id="level">Level 1</h1>
-    <!-- <h2>width:</h2> -->
-    <!-- <h2>height:</h2> -->
-    <!-- </div> -->
+    <div class="levels">
+      <p>Current Level: <span id="current_level">1</span></p>
+      <p>Next Level: ( height = <span id="next_level">34</span>)</p>
+    </div>
+    <br /><br /><br />
+    <div class="points">
+      <p id="width_point">width:</p>
+      <ps id="height_point">height:</ps>
+    </div>
+
     <button
       class="button"
       id="button"
@@ -22,6 +27,11 @@
       Clique em mim
       <span id="timerBtn"></span>
     </button>
+
+    <div class="cross left" id="left_cross"></div>
+    <div class="cross top" id="top_cross"></div>
+    <div class="cross right" id="right_cross"></div>
+    <div class="cross bottom" id="bottom_cross"></div>
 
     <script src="script.js"></script>
   </body>
