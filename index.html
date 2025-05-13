@@ -4,18 +4,30 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Tente clicar</title>
+    <link rel="icon" type="image/x-icon" href="./cursor.png" width="40px" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" type="text/css" media="screen" href="style.css" />
   </head>
   <body>
+    <div class="pass_level">
+      <h3>Dev mode:</h3>
+      <button id="nivel_2" onclick="getLevel(2)">Nível 2</button>
+      <button id="nivel_3" onclick="getLevel(3)">Nível 3</button>
+      <button id="nivel_4" onclick="getLevel(4)">Nível 4</button>
+      <button id="nivel_5" onclick="getLevel(5)">Nível 5</button>
+    </div>
+    <div class="timer">
+      <h2>Timer:</h2>
+      <h2 id="time">0</h2>
+    </div>
     <div class="levels">
       <p>Current Level: <span id="current_level">1</span></p>
-      <p>Next Level: ( height = <span id="next_level">34</span>)</p>
+      <p>Next Level: ( height = <span id="next_level">50</span>)</p>
     </div>
     <br /><br /><br />
     <div class="points">
-      <p id="width_point">width:</p>
-      <ps id="height_point">height:</ps>
+      <h4>Width: <span id="width_point"></span></h4>
+      <h4>Height: <span id="height_point"></span></h4>
     </div>
 
     <button

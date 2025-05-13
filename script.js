@@ -2,12 +2,42 @@ document.getElementById("button").addEventListener("mouseover", hoverButton);
 document.getElementById("left_cross").style.backgroundColor = "#44a3d5";
 let width_point = document.getElementById("width_point");
 let height_point = document.getElementById("height_point");
+const levels = [50, 56, 64, 74];
 let lastAlertedLevel = 0;
-alert("Olá! Tente clicar o mais rápido possível no botão!!");
+let nivel_anterior = 0;
+let timer = 0;
+let seconds = [60, 45, 20, 15];
+startGame();
+
+function getLevel(level) {
+  // Arrumar esta função
+  if (level != 5) {
+    const button = document.getElementById("button");
+    button.innerHTML = "Clique em mim";
+    if (level == 2) {
+      button.style.width = `${levels[0]}px`;
+      button.style.height = `${levels[0]}px`;
+    } else if (level == 3) {
+      button.style.width = `${levels[1]}px`;
+      button.style.height = `${levels[1]}px`;
+    } else if (level == 4) {
+      button.style.width = `${levels[2]}px`;
+      button.style.height = `${levels[2]}px`;
+    }
+  } else {
+    button.innerHTML = "Parabéns você ganhou!";
+    button.style.width = `${levels[3]}px`;
+    button.style.height = `${levels[3]}px`;
+  }
+
+  document.getElementById("current_level").innerText = level;
+  passToLevel(level);
+  nextLevel(level);
+}
 
 function passToLevel(number) {
   let current_level_el = document.getElementById("current_level");
-  let current_level = parseInt(current_level_el.innerText);
+  let current_level = getLevelAtual();
 
   if (number > current_level) {
     // Se o número(level) que será passado for maior que o level atual ->
@@ -16,19 +46,30 @@ function passToLevel(number) {
   }
   if (current_level_el.innerText == 2) {
     document.getElementById("left_cross").style.backgroundColor = "#fff";
+    document.getElementById("top_cross").style.backgroundColor = "#fff";
+    document.getElementById("bottom_cross").style.backgroundColor = "#fff";
     document.getElementById("right_cross").style.backgroundColor = "#44a3d5";
   } else if (current_level_el.innerText == 3) {
+    document.getElementById("left_cross").style.backgroundColor = "#fff";
     document.getElementById("right_cross").style.backgroundColor = "#fff";
+    document.getElementById("bottom_cross").style.backgroundColor = "#fff";
     document.getElementById("top_cross").style.backgroundColor = "#44a3d5";
   } else if (current_level_el.innerText == 4) {
+    document.getElementById("left_cross").style.backgroundColor = "#fff";
     document.getElementById("top_cross").style.backgroundColor = "#fff";
+    document.getElementById("right_cross").style.backgroundColor = "#fff";
     document.getElementById("bottom_cross").style.backgroundColor = "#44a3d5";
+  } else if (current_level_el.innerText == 5) {
+    document.getElementById("bottom_cross").style.backgroundColor = "#44a3d5";
+    document.getElementById("top_cross").style.backgroundColor = "#44a3d5";
+    document.getElementById("left_cross").style.backgroundColor = "#44a3d5";
+    document.getElementById("right_cross").style.backgroundColor = "#44a3d5";
   }
 }
 
 function nextLevel(number) {
   let next_level = document.getElementById("next_level");
-  next_levels = [40, 46, 54];
+  next_levels = [56, 64, 74];
   if (number == 2) {
     next_level.innerText = next_levels[0];
   }
@@ -37,6 +78,9 @@ function nextLevel(number) {
   }
   if (number == 4) {
     next_level.innerText = next_levels[2];
+  }
+  if (number == 5) {
+    next_level.innerText = "Atual";
   }
 }
 
@@ -48,36 +92,46 @@ function hoverButton(id) {
   button.style.right = Math.random() * 30 + "rem";
   const style = getComputedStyle(button);
 
-  const CurrentWidth = parseInt(style.width);
-  const CurrentHeight = parseInt(style.height);
+  const CurrentWidth = getWidthBtn("button");
+  const CurrentHeight = getHeightBtn("button");
 
-  width_point.innerHTML = `width: ${CurrentWidth}`;
-  height_point.innerHTML = `height: ${CurrentHeight}`;
+  width_point.innerHTML = CurrentWidth;
+  height_point.innerHTML = CurrentHeight;
 
   next_level = parseInt(document.getElementById("next_level").innerText);
 
-  if (CurrentHeight >= 34) {
+  if (CurrentHeight >= 50) {
+    button.style.fontSize = "11px";
     button.style.right = 0;
+    button.style.bottom = 1.65 + "rem";
     button.style.left = Math.random() * 30 + "rem";
     passToLevel(2);
     nextLevel(2);
   }
-  if (CurrentHeight >= 40) {
+  if (CurrentHeight >= 56) {
     button.style.left = 0;
+    button.style.right = 0;
     button.style.bottom = Math.random() * 15 + "rem";
     passToLevel(3);
     nextLevel(3);
   }
-  if (CurrentHeight >= 46) {
+  if (CurrentHeight >= 64) {
+    button.style.fontSize = "12px";
+    button.style.left = 0;
+    button.style.right = 0;
     button.style.bottom = 0;
     button.style.top = Math.random() * 15 + "rem";
     passToLevel(4);
     nextLevel(4);
   }
-  if (CurrentHeight >= 54) {
+  if (CurrentHeight >= 74) {
+    button.style.fontSize = "20px";
     passToLevel(5);
+    nextLevel(5);
     button.style.top = 0;
-    button.style.bottom = "4rem";
+    button.style.left = 0;
+    button.style.right = 0;
+    button.style.bottom = 1.65 + "rem";
     button.style.width = "200px";
     button.style.height = "200px";
     button.innerHTML = "Parabéns você ganhou!";
@@ -86,7 +140,6 @@ function hoverButton(id) {
 
 function clique(id) {
   const button = document.getElementById(id);
-  const timer = document.getElementById("timerBtn");
 
   if (button.innerHTML === "+2 Points") {
     return;
@@ -103,16 +156,18 @@ function getCurrentLevel() {
   let current_level = parseInt(
     document.getElementById("current_level").innerText
   );
-
   if (current_level > lastAlertedLevel) {
     if (current_level == 2) {
-      alert("Boa, bora pro nível 2!!");
+      alert("Bora pro Nível 2!!");
     }
     if (current_level == 3) {
-      alert("Caraca, você é bom hein, nível 3 então!!");
+      alert("Você é bom hein, Nível 3 então!!");
     }
     if (current_level == 4) {
-      alert("Nível 4 agora, é bom você ter paciência pois não vai ser facil!");
+      alert("Nível 4 agora, é bom você ter paciência pois não vai ser fácil!");
+    }
+    if (current_level == 5) {
+      alert("Boaa você ganhou!!");
     }
   }
   lastAlertedLevel = current_level;
@@ -129,27 +184,74 @@ function aumentarBtn(id) {
 
   button.style.width = `${newWidth}px`;
   button.style.height = `${newHeight}px`;
-
-  // if (button.innerHTML == "Parabéns você ganhou!") {
-  //   newWidth = CurrentWidth - 2;
-  //   newHeight = CurrentHeight - 2;
-  //   button.style.width = `${newWidth}px`;
-  //   button.style.height = `${newHeight}px`;
-  // } Arrumar esta condição
 }
 
-function diminuirBtn() {
+function getLevelAtual() {
+  return parseInt(document.getElementById("current_level").innerText);
+}
+
+function startGame() {
+  alert(`Tente clicar no botão em até ${seconds[0]} segundos!!`); // Início
+  let time = document.getElementById("time"); // Pego o tempo
+  time.innerText = timer; // Texto do tempo é = 0
+
+  let loop = setInterval(() => {
+    // A cada 1 segundo =>
+    const levelAtual = getLevelAtual(); // Pego o nível atual
+    const tempoLimite = seconds[levelAtual - 1]; // Crio o "tempo limite"(tempo limite do último level)
+
+    if (levelAtual !== nivel_anterior) {
+      // Se o level atual for diferente do level anterior =>
+      timer = 0; // Tempo = 0
+      time.innerText = timer; // Texto do tempo = 0
+      nivel_anterior = levelAtual; // Nível anterior se torna o atual para fazer a condição do próximo level
+
+      if (levelAtual < seconds.length && levelAtual != 1) {
+        // Se o level atual for menor que o tamanho das opções de tempo (4) =>
+        alert(`Agora você tem ${tempoLimite} segundos!!`); // Dá um alerta de novo nível
+      }
+    }
+    timer++; // Aumenta o tempo
+    time.innerText = timer; // Troca o texto do tempo
+
+    if (timer > second) {
+      // Se o tempo for maior que o tempo limite =>
+      stopGame(loop); // Jogo para e reiniciar
+    }
+  }, 1000);
+}
+function stopGame(loop) {
+  clearInterval(loop);
+  alert("Acabou o tempo, mas tenta ser mais rápido na próxima beleza!!");
+  location.reload();
+}
+function restartTime() {
+  timer = 0;
+  document.getElementById("time").innerText = timer;
+}
+function getWidthBtn(id) {
   const button = document.getElementById(id);
   const style = getComputedStyle(button);
-
-  const CurrentWidth = parseInt(style.width);
-  const CurrentHeight = parseInt(style.height);
-
-  button.style.width = `${newWidth - 2}px`;
-  button.style.height = `${newHeight - 2}px`;
+  return parseInt(style.width);
 }
-// Fazer com que a cor das cross pisquem por um 0.5s após subir de nível
+function getHeightBtn(id) {
+  const button = document.getElementById(id);
+  const style = getComputedStyle(button);
+  return parseInt(style.height);
+}
+
+// function diminuirBtn(id) { Arrumar essa função
+
+//   const button = document.getElementById(id);
+//   const style = getComputedStyle(button);
+
+//   const CurrentWidth = getWidthBtn("button");
+//   const CurrentHeight = getHeightBtn("button");
+
+//   button.style.width = `${newWidth - 2}px`;
+//   button.style.height = `${newHeight - 2}px`;
+// }
+
 // Colocar um tempo para cada nível, e caso o jogador não consiga a tempo, o jogo reinicia (colocar um alerta dizendo)
-// Pensar em colocar uma div aparecendo ao invés de vários alertas
 // Mexer no style do jogo (pra ficar mais legal)
 // Criar uma tela que separe o jogo por fases, e cada fase é um arquivo separado com um game diferente tmb
