@@ -118,3 +118,22 @@ h2#time,
 span {
   color: #44a3d5;
 }
+
+@media (min-width: 1400px) {
+  div.levels {
+    left: 22rem;
+    top: 10rem;
+    font-size: 25px;
+  }
+  div.points {
+    position: absolute;
+    top: 40rem;
+    left: 22rem;
+    font-size: 22px;
+  }
+  div.timer {
+    right: 24rem;
+    bottom: 12rem;
+    font-size: 20px;
+  }
+}

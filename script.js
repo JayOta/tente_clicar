@@ -206,7 +206,7 @@ function startGame() {
       time.innerText = timer; // Texto do tempo = 0
       nivel_anterior = levelAtual; // Nível anterior se torna o atual para fazer a condição do próximo level
 
-      if (levelAtual < seconds.length && levelAtual != 1) {
+      if (levelAtual < seconds.length) {
         // Se o level atual for menor que o tamanho das opções de tempo (4) =>
         alert(`Agora você tem ${tempoLimite} segundos!!`); // Dá um alerta de novo nível
       }
@@ -214,10 +214,14 @@ function startGame() {
     timer++; // Aumenta o tempo
     time.innerText = timer; // Troca o texto do tempo
 
-    if (timer > second) {
-      // Se o tempo for maior que o tempo limite =>
-      stopGame(loop); // Jogo para e reiniciar
+    if(getLevelAtual() == 1){ // Coloquei aqui
+      second = seconds[0];
+      if (timer > second) {
+        // Se o tempo for maior que o tempo limite =>
+        stopGame(loop); // Jogo para e reiniciar
+      }
     }
+    else if() // Coloquei aqui
   }, 1000);
 }
 function stopGame(loop) {
