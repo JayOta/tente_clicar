@@ -191,15 +191,14 @@ function getLevelAtual() {
 }
 
 function startGame() {
-  alert(`Tente clicar no botão em até ${seconds[0]} segundos!!`); // Início
-  let time = document.getElementById("time"); // Pego o tempo
-  time.innerText = timer; // Texto do tempo é = 0
-
+  alert(`Tente clicar no botão em até ${seconds[0]} segundos!!`);
+  let time = document.getElementById("time");
+  time.innerText = timer;
   let loop = setInterval(() => {
-    // A cada 1 segundo =>
-    const levelAtual = getLevelAtual(); // Pego o nível atual
-    const tempoLimite = seconds[levelAtual - 1]; // Crio o "tempo limite"(tempo limite do último level)
+    const nivelAtual = getLevelAtual();
+    const tempoLimite = seconds[nivelAtual - 1];
 
+<<<<<<< Updated upstream
     if (levelAtual !== nivel_anterior) {
       // Se o level atual for diferente do level anterior =>
       timer = 0; // Tempo = 0
@@ -210,10 +209,19 @@ function startGame() {
         // Se o level atual for menor que o tamanho das opções de tempo (4) =>
         alert(`Agora você tem ${tempoLimite} segundos!!`); // Dá um alerta de novo nível
       }
+=======
+    if (nivelAtual !== nivel_anterior) {
+      // Se o nível atual for diferente do nível anterior (se vc passou de fase) ->
+      restartTime(); // Reinicia o tempo
+      nivel_anterior = nivelAtual; // Nível anterior = nível atual
+      nextLevel([nivelAtual]); // Próximo "nível"(height necessária para passar) igual o nível atual
+>>>>>>> Stashed changes
     }
-    timer++; // Aumenta o tempo
-    time.innerText = timer; // Troca o texto do tempo
 
+    timer++; // Aumenta o tempo
+    time.innerText = timer; // Atualiza o texto do tempo
+
+<<<<<<< Updated upstream
     if(getLevelAtual() == 1){ // Coloquei aqui
       second = seconds[0];
       if (timer > second) {
@@ -223,6 +231,13 @@ function startGame() {
     }
     else if() // Coloquei aqui
   }, 1000);
+=======
+    if (timer > seconds[nivelAtual - 1]) {
+      // Se o tempo for maior que o tempo limite ->
+      stopGame(loop); // O jogo acaba e reinicia
+    }
+  }, 1000); // Cada um segundo..
+>>>>>>> Stashed changes
 }
 function stopGame(loop) {
   clearInterval(loop);
