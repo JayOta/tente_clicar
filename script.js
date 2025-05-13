@@ -9,7 +9,7 @@ let timer = 0;
 let seconds = [60, 45, 20, 15];
 startGame();
 
-function getLevel(level) {
+function devMode(level) {
   // Arrumar esta função
   if (level != 5) {
     const button = document.getElementById("button");
