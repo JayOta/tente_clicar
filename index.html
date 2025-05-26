@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Tente clicar</title>
+    <link rel="icon" type="image/x-icon" href="./cursor.png" width="40px" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" media="screen" href="style.css" />
+  </head>
+  <body>
+    <div class="pass_level">
+      <h3>Dev mode:</h3>
+      <button id="nivel_2" onclick="devMode(2)">Nível 2</button>
+      <button id="nivel_3" onclick="devMode(3)">Nível 3</button>
+      <button id="nivel_4" onclick="devMode(4)">Nível 4</button>
+      <button id="nivel_5" onclick="devMode(5)">Nível 5</button>
+    </div>
+    <div class="timer">
+      <h2>Timer:</h2>
+      <h2 id="time">0</h2>
+    </div>
+    <div class="levels">
+      <p>Current Level: <span id="current_level">1</span></p>
+      <p>Next Level: ( height = <span id="next_level">50</span>)</p>
+    </div>
+    <br /><br /><br />
+    <div class="points">
+      <h4>Width: <span id="width_point"></span></h4>
+      <h4>Height: <span id="height_point"></span></h4>
+    </div>
+
+    <button class="button" id="ball-button">
+      Clique em mim
+      <span id="timerBtn"></span>
+    </button>
+
+    <div class="cross left" id="left_cross"></div>
+    <div class="cross top" id="top_cross"></div>
+    <div class="cross right" id="right_cross"></div>
+    <div class="cross bottom" id="bottom_cross"></div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
