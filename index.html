@@ -9,36 +9,56 @@
     <link rel="stylesheet" type="text/css" media="screen" href="style.css" />
   </head>
   <body>
-    <div class="pass_level">
-      <h3>Dev mode:</h3>
-      <button id="nivel_2" onclick="devMode(2)">Nível 2</button>
-      <button id="nivel_3" onclick="devMode(3)">Nível 3</button>
-      <button id="nivel_4" onclick="devMode(4)">Nível 4</button>
-      <button id="nivel_5" onclick="devMode(5)">Nível 5</button>
-    </div>
-    <div class="timer">
-      <h2>Timer:</h2>
-      <h2 id="time">0</h2>
-    </div>
-    <div class="levels">
-      <p>Current Level: <span id="current_level">1</span></p>
-      <p>Next Level: ( height = <span id="next_level">50</span>)</p>
-    </div>
-    <br /><br /><br />
-    <div class="points">
-      <h4>Width: <span id="width_point"></span></h4>
-      <h4>Height: <span id="height_point"></span></h4>
+    <div id="menu">
+      <div id="menu_title">
+        <h1>Menu</h1>
+        <img src="./cursor.png" alt="cursos_image" />
+      </div>
+      <div class="buttons">
+        <button id="jogar">Jogar</button>
+        <button id="config">Configurações</button>
+        <button id="sair_menu">Sair</button>
+      </div>
     </div>
 
-    <button class="button" id="ball-button">
-      Clique em mim
-      <span id="timerBtn"></span>
-    </button>
+    <div id="div_sair">
+      <button id="sair_game">Sair</button>
+    </div>
 
-    <div class="cross left" id="left_cross"></div>
-    <div class="cross top" id="top_cross"></div>
-    <div class="cross right" id="right_cross"></div>
-    <div class="cross bottom" id="bottom_cross"></div>
+    <div id="game">
+      <div class="pass_level">
+        <h3>Dev mode:</h3>
+        <button id="nivel_2" onclick="devMode(2)">Nível 2</button>
+        <button id="nivel_3" onclick="devMode(3)">Nível 3</button>
+        <button id="nivel_4" onclick="devMode(4)">Nível 4</button>
+        <button id="nivel_5" onclick="devMode(5)">Nível 5</button>
+      </div>
+      <div class="timer">
+        <h2>Timer:</h2>
+        <h2 id="time">0</h2>
+      </div>
+      <div class="levels">
+        <p>Current Level: <span id="current_level">1</span></p>
+        <p id="p_tag_level">
+          Next Level: ( height = <span id="next_level">50</span>)
+        </p>
+      </div>
+      <br /><br /><br />
+      <div class="points">
+        <h4>Width: <span id="width_point"></span></h4>
+        <h4>Height: <span id="height_point"></span></h4>
+      </div>
+
+      <button class="button" id="ball-button">
+        Clique em mim
+        <span id="timerBtn"></span>
+      </button>
+
+      <div class="cross left" id="left_cross"></div>
+      <div class="cross top" id="top_cross"></div>
+      <div class="cross right" id="right_cross"></div>
+      <div class="cross bottom" id="bottom_cross"></div>
+    </div>
 
     <script src="script.js"></script>
   </body>

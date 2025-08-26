@@ -1,5 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=MuseoModerno:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
 
+:root {
+  --azul: #44a3d5;
+  --cinza: rgb(194, 194, 194);
+}
+
 body {
   display: flex;
   flex-direction: column;
@@ -10,6 +15,83 @@ body {
   color: #fff;
   cursor: crosshair;
   font-family: "Roboto", sans-serif;
+}
+
+div#div_sair {
+  position: absolute;
+  right: 2rem;
+  top: 2rem;
+}
+
+div#div_sair button {
+  background-color: var(--azul);
+  color: #fff;
+  font-size: 17px;
+  border: none;
+  border-radius: 4px;
+  box-shadow: 2px 3px 3px #09171e;
+  width: 10rem;
+  height: 3rem;
+  transition: 0.2s ease-in-out;
+}
+div#div_sair button:hover {
+  background-color: #4baadd;
+  box-shadow: 2px 2px 2px #36799b;
+}
+
+div#menu {
+  width: 40rem;
+  height: 30rem;
+  background-color: rgb(194, 194, 194);
+  /* display: flex; */
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  border-radius: 6px;
+}
+div#menu #menu_title {
+  display: flex;
+  align-items: center;
+  margin-left: 2rem;
+}
+div#menu #menu_title img {
+  position: relative;
+  top: 1rem;
+  width: 4rem;
+  height: 4rem;
+}
+div#menu h1 {
+  margin-top: 4rem;
+  font-size: 55px;
+  color: var(--azul);
+}
+div#menu .buttons {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 20rem;
+  height: 25rem;
+  gap: 1rem;
+}
+div#menu button {
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  box-shadow: 1px 2px 2px #4e4e4e;
+  width: 18rem;
+  height: 3.5rem;
+  background-color: var(--azul);
+  color: #fff;
+  font-size: 20px;
+  transition: 0.2s ease-in-out;
+}
+div#menu button:hover {
+  background-color: #52bcf5;
+  box-shadow: 2px 5px 5px #7c7c7c;
+}
+
+div#game {
+  /*  */
 }
 .cross {
   z-index: -1;
@@ -92,8 +174,6 @@ button.button {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 3rem;
-  height: 3rem;
   border: none;
   border-radius: 50%;
   background-color: #fff;
