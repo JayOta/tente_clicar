@@ -25,11 +25,16 @@ class Game {
     this.timer = 0;
     this.seconds = [60, 45, 20, 15];
     this.current_level = document.getElementById("current_level");
+    this.current_height_span = document.getElementById("current_height");
+    this.ball_height_span = document.getElementById("ball_height");
     this.next_level = document.getElementById("next_level");
     this.p_level = document.getElementById("p_tag_level");
 
     this.window_width = window.innerWidth;
     this.window_height = window.innerHeight;
+
+    this.current_height_span.innerText = this.level[1];
+    this.ball_height_span.innerText = this.level[1];
 
     // Criando Crosses
     this.leftCross = new Cross("left");
@@ -38,20 +43,20 @@ class Game {
     this.bottomCross = new Cross("bottom");
 
     this.msg_levels = {
-      win: [
-        `Tente clicar no botão em até ${this.seconds[0]} segundos!!`,
-        "Bora pro Nível 2!!",
-        "Você é bom hein, Nível 3 então!!",
-        "Nível 4 agora, é bom você ter paciência pois não vai ser fácil!",
-        "Boaa você ganhou!!",
-      ],
-      lost: [
-        "Acabou o tempo, mas tenta ser mais rápido na próxima beleza!!",
-        "",
-        "",
-        "",
-        "",
-      ],
+      start: `Tente clicar no botão em até ${this.seconds[0]} segundos!!`,
+      win: {
+        2: "Bora pro Nível 2!!",
+        3: "Você é bom hein, Nível 3 então!!",
+        4: "Nível 4 agora, é bom você ter paciência pois não vai ser fácil!",
+        5: "Boaa você ganhou!!",
+      },
+      lost: {
+        1: "Acabou o tempo, mas tenta ser mais rápido na próxima beleza!!",
+        2: "",
+        3: "",
+        4: "",
+        5: "",
+      },
     };
 
     this.ball = new Ball("ball-button", this);
@@ -60,6 +65,7 @@ class Game {
   startGame() {
     this.jogar_btn.addEventListener("click", () => {
       this.isPlaying = true;
+      alert(this.msg_levels.start);
       this.startTime();
       this.game_div.style.display = "flex";
       this.menu_div.style.display = "none";
@@ -80,6 +86,14 @@ class Game {
     }
   }
 
+  setCurrentHeightSpan(current_height) {
+    this.current_height_span = current_height;
+  }
+
+  getCurrentHeightSpan() {
+    return this.current_height_span;
+  }
+
   getWindowWidth() {
     return this.window_width;
   }
@@ -87,25 +101,11 @@ class Game {
     return this.window_height;
   }
 
-  getCurrentLevel() {
-    return this.current_level.innerText;
+  setCurrentLevel(level) {
+    this.current_level.innerText = level;
   }
-  sendMessage() {
-    if (this.getCurrentLevel() == 1) {
-      return alert(this.msg_levels[win[one]]);
-    }
-    if (this.getCurrentLevel() == 2) {
-      return alert(this.msg_levels[win[two]]);
-    }
-    if (this.getCurrentLevel() == 3) {
-      return alert(this.msg_levels[win[three]]);
-    }
-    if (this.getCurrentLevel() == 4) {
-      return alert(this.msg_levels[win[four]]);
-    }
-    if (this.getCurrentLevel() == 5) {
-      return alert(this.msg_levels[win[five]]);
-    }
+  getCurrentLevel() {
+    return parseInt(this.current_level.innerText);
   }
 
   getNextLevel() {
@@ -113,12 +113,11 @@ class Game {
 
     // Se ainda não for o último nível
     if (current < 5) {
-      this.next_level.innerText = this.level[current + 1]; // pega o próximo nível no objeto level
+      return (this.next_level.innerText = this.level[current + 1]); // pega o próximo nível no objeto level
     }
 
     // Se for o último nível
-    this.next_level.innerText = "";
-    this.p_level = "";
+    return (this.next_level.innerText = "");
   }
 
   passLevel() {
@@ -150,6 +149,11 @@ class Game {
         break;
     }
 
+    // Exibe alert do nível
+    if (this.msg_levels.win[level]) {
+      alert(this.msg_levels.win[level]);
+    }
+
     // Aqui: centraliza a bolinha ao passar de nível
     if (this.ball) {
       this.ball.centerBall();
@@ -166,8 +170,7 @@ class Game {
       const tempoLimite = this.seconds[nivelAtual - 1];
 
       if (nivelAtual !== nivelAnterior) {
-        this.passLevel();
-        this.restartTime();
+        this.restartTime(time);
         nivelAnterior = nivelAtual;
       }
 
@@ -180,13 +183,13 @@ class Game {
     }, 1000);
   }
 
-  restartTime() {
+  restartTime(time) {
     this.timer = 0;
-    document.getElementById("time").innerText = this.timer;
+    time.innerText = this.timer;
   }
   stopTime(loop) {
     clearInterval(loop);
-    alert(this.msg_levels.lost[0]);
+    alert(this.msg_levels.lost[this.getCurrentLevel()]);
     location.reload();
   }
 }
@@ -240,7 +243,7 @@ class Ball {
     this.width = parseInt(this.style.width);
     this.height = parseInt(this.style.height);
     this.fontSize = parseInt(this.style.fontSize);
-    this.defaultText = "Clique em mim";
+    this.defaultText = "";
     this.hasWon = false;
 
     // Inicializa tamanho e centraliza
@@ -289,22 +292,33 @@ class Ball {
 
     this.ballElement.innerText = "+2 Points";
 
-    if (this.getHeight() >= this.game.level[1]) this.setFontSize(11);
-    if (this.getHeight() >= this.game.level[3]) this.setFontSize(12);
+    if (this.getHeight() >= this.game.level[1]) this.setFontSize(14);
+    if (this.getHeight() >= this.game.level[3]) this.setFontSize(17);
     if (this.getHeight() >= this.game.level[4]) {
       this.setFontSize(20);
       this.win();
     }
 
     setTimeout(() => {
-      this.ballElement.innerText = this.defaultText;
-    }, 1000);
+      this.defaultText = this.getHeight(); // Texto padrão se torna a altura da bolinha
+      this.ballElement.innerText = this.defaultText; // Texto padrão HTML se torna a altura da bolinha
+    }, 1000); // a cada 1 segundo
   }
 
   getBigger(size) {
     this.setHeight(this.getHeight() + size);
     this.setWidth(this.getWidth() + size);
     this.morePoints();
+
+    // Verifica se passou de nível
+    const current = this.game.getCurrentLevel();
+    const nextLimit = this.game.level[current + 1];
+
+    if (nextLimit && this.getHeight() >= nextLimit) {
+      this.game.setCurrentLevel(current + 1); // atualiza o número visível
+      this.game.passLevel(); // muda a cross, centraliza bola etc
+      this.game.restartTime(document.getElementById("time")); // reinicia tempo
+    }
   }
 
   win() {
@@ -323,6 +337,9 @@ class Ball {
       const centerX = (this.game.getWindowWidth() - this.getWidth()) / 2;
       const centerY = (this.game.getWindowHeight() - this.getHeight()) / 2;
       const h = this.getHeight();
+
+      this.game.current_height_span.innerText = h;
+      this.game.ball_height_span.innerText = h;
 
       if (h < this.game.level[2]) {
         // Nível 1 - esquerda
