@@ -159,6 +159,7 @@ class Game {
       this.ball.centerBall();
     }
   }
+
   startTime() {
     let time = document.getElementById("time");
     time.innerText = this.timer;
@@ -182,7 +183,6 @@ class Game {
       }
     }, 1000);
   }
-
   restartTime(time) {
     this.timer = 0;
     time.innerText = this.timer;
