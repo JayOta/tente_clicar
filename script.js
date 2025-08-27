@@ -11,6 +11,7 @@ class Game {
     this.sair_game_btn.style.display = "none";
     this.menu_div.style.display = "flex";
     this.game_div.style.display = "none";
+
     this.config_btn.addEventListener("click", () => {
       alert("Função em produção..");
     });
@@ -18,7 +19,8 @@ class Game {
       alert("Função em produção..");
     });
 
-    this.levels_height = [50, 56, 64, 74];
+    this.level = { 1: 48, 2: 50, 3: 56, 4: 64, 5: 74 };
+
     this.last_level = 1;
     this.timer = 0;
     this.seconds = [60, 45, 20, 15];
@@ -29,29 +31,30 @@ class Game {
     this.window_width = window.innerWidth;
     this.window_height = window.innerHeight;
 
-    this.leftCross = new Cross("left_cross");
-    this.rightCross = new Cross("right_cross");
-    this.topCross = new Cross("top_cross");
-    this.bottomCross = new Cross("bottom_cross");
-    this.msg_levels = [
-      (won) => [
-        (one) => `Tente clicar no botão em até ${seconds[0]} segundos!!`,
-        (two) => "Bora pro Nível 2!!",
-        (three) => "Você é bom hein, Nível 3 então!!",
-        (four) =>
-          "Nível 4 agora, é bom você ter paciência pois não vai ser fácil!",
-        (five) => "Boaa você ganhou!!",
+    // Criando Crosses
+    this.leftCross = new Cross("left");
+    this.rightCross = new Cross("right");
+    this.topCross = new Cross("top");
+    this.bottomCross = new Cross("bottom");
+
+    this.msg_levels = {
+      win: [
+        `Tente clicar no botão em até ${this.seconds[0]} segundos!!`,
+        "Bora pro Nível 2!!",
+        "Você é bom hein, Nível 3 então!!",
+        "Nível 4 agora, é bom você ter paciência pois não vai ser fácil!",
+        "Boaa você ganhou!!",
       ],
-      (lost) => [
-        (zero) =>
-          "Acabou o tempo, mas tenta ser mais rápido na próxima beleza!!",
-        (one) => "",
-        (two) => "",
-        (three) => "",
-        (four) => "",
-        (five) => "",
+      lost: [
+        "Acabou o tempo, mas tenta ser mais rápido na próxima beleza!!",
+        "",
+        "",
+        "",
+        "",
       ],
-    ];
+    };
+
+    this.ball = new Ball("ball-button", this);
   }
 
   startGame() {
@@ -72,6 +75,7 @@ class Game {
         this.menu_div.style.display = "flex";
         this.game_div.style.display = "none";
         this.sair_game_btn.style.display = "none";
+        location.reload();
       });
     }
   }
@@ -105,83 +109,126 @@ class Game {
   }
 
   getNextLevel() {
-    if (this.getCurrentLevel() == 1) {
-      return (this.next_level = this.levels_height[0]);
+    const current = parseInt(this.getCurrentLevel());
+
+    // Se ainda não for o último nível
+    if (current < 5) {
+      this.next_level.innerText = this.level[current + 1]; // pega o próximo nível no objeto level
     }
-    if (this.getCurrentLevel() == 2) {
-      return (this.next_level = this.levels_height[1]);
-    }
-    if (this.getCurrentLevel() == 3) {
-      return (this.next_level = this.levels_height[2]);
-    }
-    if (this.getCurrentLevel() == 4) {
-      return (this.next_level = this.levels_height[3]);
-    }
-    if (this.getCurrentLevel() == 5) {
-      return (this.next_level = "") && (this.p_level = "");
-    }
+
+    // Se for o último nível
+    this.next_level.innerText = "";
+    this.p_level = "";
   }
 
   passLevel() {
-    if (this.getCurrentLevel() == 1) {
-      this.leftCross.changeColor("#44a3d5");
+    const level = parseInt(this.getCurrentLevel());
+
+    // Reseta cores
+    this.leftCross.changeColor("#fff");
+    this.rightCross.changeColor("#fff");
+    this.topCross.changeColor("#fff");
+    this.bottomCross.changeColor("#fff");
+
+    // Ativa a cross correspondente
+    switch (level) {
+      case 1:
+        this.leftCross.changeColor("#44a3d5");
+        this.getNextLevel();
+        break;
+      case 2:
+        this.rightCross.changeColor("#44a3d5");
+        this.getNextLevel();
+        break;
+      case 3:
+        this.topCross.changeColor("#44a3d5");
+        this.getNextLevel();
+        break;
+      case 4:
+        this.bottomCross.changeColor("#44a3d5");
+        this.getNextLevel();
+        break;
     }
-    if (this.getCurrentLevel() == 2) {
-      this.leftCross.changeColor("#fff");
-      this.rightCross.changeColor("#44a3d5");
-    }
-    if (this.getCurrentLevel() == 3) {
-      this.rightCross.changeColor("#fff");
-      this.topCross.changeColor("#44a3d5");
-    }
-    if (this.getCurrentLevel() == 4) {
-      this.topCross.changeColor("#fff");
-      this.bottomCross.changeColor("#44a3d5");
+
+    // Aqui: centraliza a bolinha ao passar de nível
+    if (this.ball) {
+      this.ball.centerBall();
     }
   }
   startTime() {
     let time = document.getElementById("time");
     time.innerText = this.timer;
-    let loop = setInterval(() => {
-      const nivelAtual = getLevelAtual();
-      const tempoLimite = seconds[nivelAtual - 1];
 
-      if (nivelAtual !== nivel_anterior) {
-        // Se o nível atual for diferente do nível anterior (se vc passou de fase) ->
-        restartTime(); // Reinicia o tempo
-        nivel_anterior = nivelAtual; // Nível anterior = nível atual
-        nextLevel([nivelAtual]); // Próximo "nível"(height necessária para passar) igual o nível atual
+    let nivelAnterior = this.getCurrentLevel();
+
+    let loop = setInterval(() => {
+      const nivelAtual = this.getCurrentLevel();
+      const tempoLimite = this.seconds[nivelAtual - 1];
+
+      if (nivelAtual !== nivelAnterior) {
+        this.passLevel();
+        this.restartTime();
+        nivelAnterior = nivelAtual;
       }
 
-      this.timer++; // Aumenta o tempo
-      time.innerText = this.timer; // Atualiza o texto do tempo
+      this.timer++;
+      time.innerText = this.timer;
 
       if (this.timer > tempoLimite) {
-        // Se o tempo for maior que o tempo limite ->
-        stopTime(loop); // O jogo acaba e reinicia
+        this.stopTime(loop);
       }
-    }, 1000); // Cada um segundo..
+    }, 1000);
   }
+
   restartTime() {
     this.timer = 0;
     document.getElementById("time").innerText = this.timer;
   }
   stopTime(loop) {
     clearInterval(loop);
-    alert(this.msg_levels[lost[zero]]);
+    alert(this.msg_levels.lost[0]);
     location.reload();
   }
 }
 
 class Cross {
-  constructor(id) {
-    this.crossElement = document.getElementById(id);
-    this.backColor = window.getComputedStyle(this.crossElement).backgroundColor;
+  constructor(name) {
+    this.name = name; // "left", "right", "top" ou "bottom"
+    this.crossElement = document.getElementById(name);
+    this.crossElement.style.position = "absolute";
+    this.alignCross();
   }
 
-  changeColor(BackgroundColor) {
-    this.backColor = BackgroundColor;
-    this.crossElement.style.backgroundColor = BackgroundColor;
+  alignCross() {
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+    const crossWidth = this.crossElement.offsetWidth;
+    const crossHeight = this.crossElement.offsetHeight;
+
+    switch (this.name) {
+      case "left":
+        this.crossElement.style.left = "0px";
+        this.crossElement.style.top = (windowHeight - crossHeight) / 2 + "px";
+        break;
+      case "right":
+        this.crossElement.style.right = "0px";
+        this.crossElement.style.top = (windowHeight - crossHeight) / 2 + "px";
+        break;
+      case "top":
+        this.crossElement.style.top = "0px";
+        this.crossElement.style.left = (windowWidth - crossWidth) / 2 + "px";
+        break;
+      case "bottom":
+        this.crossElement.style.bottom = "0px";
+        this.crossElement.style.left = (windowWidth - crossWidth) / 2 + "px";
+        break;
+      default:
+        console.warn("Nome da cross inválido:", this.name);
+    }
+  }
+
+  changeColor(color) {
+    this.crossElement.style.backgroundColor = color;
   }
 }
 
@@ -192,51 +239,65 @@ class Ball {
     this.style = window.getComputedStyle(this.ballElement);
     this.width = parseInt(this.style.width);
     this.height = parseInt(this.style.height);
-    this.fontSize = this.style.fontSize;
+    this.fontSize = parseInt(this.style.fontSize);
     this.defaultText = "Clique em mim";
     this.hasWon = false;
-    this.ballElement.style.width = 3 + "rem";
-    this.ballElement.style.height = 3 + "rem";
+
+    // Inicializa tamanho e centraliza
+    this.setWidth(3 * 16); // 3rem = 16px * 3
+    this.setHeight(3 * 16);
+    this.centerBall();
+
+    // Listeners
+    this.addClickListener();
+    this.addHoverListener();
   }
+
   setFontSize(size) {
     this.fontSize = size;
     this.ballElement.style.fontSize = size + "px";
   }
+
   setWidth(width) {
     this.width = width;
     this.ballElement.style.width = width + "px";
   }
+
   setHeight(height) {
     this.height = height;
     this.ballElement.style.height = height + "px";
   }
+
   getWidth() {
     return this.width;
   }
+
   getHeight() {
     return this.height;
   }
 
-  morePoints() {
-    if (this.ballElement.innerHTML === "+2 Points") {
-      return;
-    }
+  centerBall() {
+    const centerX = (this.game.getWindowWidth() - this.getWidth()) / 2;
+    const centerY = (this.game.getWindowHeight() - this.getHeight()) / 2;
+    this.ballElement.style.position = "absolute";
+    this.ballElement.style.left = centerX + "px";
+    this.ballElement.style.top = centerY + "px";
+  }
 
-    this.ballElement.innerHTML = "+2 Points";
-    if (Math.round(this.getHeight()) >= this.game.levels_height[0]) {
-      this.setFontSize(11);
-    }
-    if (Math.round(this.getHeight()) >= this.game.levels_height[2]) {
-      this.setFontSize(12);
-    }
-    if (Math.round(this.getHeight()) >= this.game.levels_height[3]) {
+  morePoints() {
+    if (this.ballElement.innerText === "+2 Points") return;
+
+    this.ballElement.innerText = "+2 Points";
+
+    if (this.getHeight() >= this.game.level[1]) this.setFontSize(11);
+    if (this.getHeight() >= this.game.level[3]) this.setFontSize(12);
+    if (this.getHeight() >= this.game.level[4]) {
       this.setFontSize(20);
       this.win();
-      return;
     }
 
     setTimeout(() => {
-      this.ballElement.innerHTML = this.defaultText;
+      this.ballElement.innerText = this.defaultText;
     }, 1000);
   }
 
@@ -249,65 +310,40 @@ class Ball {
   win() {
     if (this.hasWon) return;
     this.hasWon = true;
-
-    this.ballElement.innerHTML = "Parabéns você ganhou!";
+    this.ballElement.innerText = "Parabéns você ganhou!";
     this.setHeight(200);
     this.setWidth(200);
-  }
-
-  centerBall() {
-    const centerX = (this.game.getWindowWidth() - this.getWidth()) / 2;
-    const centerY = (this.game.getWindowHeight() - this.getHeight()) / 2;
-
-    this.ballElement.style.position = "absolute";
-    this.ballElement.style.left = centerX + "px";
-    this.ballElement.style.top = centerY + "px";
+    this.centerBall();
   }
 
   addHoverListener() {
     this.ballElement.addEventListener("mouseover", () => {
-      const centerX = (this.game.getWindowWidth() - this.getWidth()) / 2; // Pega a posição horizontal central
-      const centerY = (this.game.getWindowHeight() - this.getHeight()) / 2; // Pega a posição vertical central
+      if (this.hasWon) return; // não se move após ganhar
 
-      const randomX =
-        Math.random() * (this.game.getWindowWidth() - this.getWidth()); // Pega uma posição aleatoria da tela horizontalmente
-      const randomY =
-        Math.random() * (this.game.getWindowHeight() - this.getHeight()); // Pega uma posição aleatoria da tela verticalmente
+      const centerX = (this.game.getWindowWidth() - this.getWidth()) / 2;
+      const centerY = (this.game.getWindowHeight() - this.getHeight()) / 2;
+      const h = this.getHeight();
 
-      this.centerBall();
-      if (this.height < this.game.levels_height[0]) {
-        // Nível 1
-
-        this.ballElement.style.left = Math.random() * centerX + "px"; // bola se mexe do centro a esquerda aleatoriamente
-      } else if (
-        this.height >= this.game.levels_height[0] &&
-        this.height < this.game.levels_height[1]
-      ) {
-        // Nível 2
-
+      if (h < this.game.level[2]) {
+        // Nível 1 - esquerda
+        this.ballElement.style.left = Math.random() * centerX + "px";
+      } else if (h >= this.game.level[2] && h < this.game.level[3]) {
+        // Nível 2 - direita
         this.ballElement.style.left =
           centerX +
           Math.random() *
             (this.game.getWindowWidth() - centerX - this.getWidth()) +
-          "px"; // bola se mexe do centro a direita aleatoriamente
-      } else if (
-        this.height >= this.game.levels_height[1] &&
-        this.height < this.game.levels_height[2]
-      ) {
-        // Nível 3
-
-        this.ballElement.style.top = Math.random() * centerY + "px"; // bola se mexe do centro para cima aleatoriamente
-      } else if (
-        this.height >= this.game.levels_height[2] &&
-        this.height < this.game.levels_height[3]
-      ) {
-        // Nível 4
-
+          "px";
+      } else if (h >= this.game.level[3] && h < this.game.level[4]) {
+        // Nível 3 - para cima
+        this.ballElement.style.top = Math.random() * centerY + "px";
+      } else if (h >= this.game.level[4] && h < this.game.level[5]) {
+        // Nível 4 - para baixo
         this.ballElement.style.top =
           centerY +
           Math.random() *
             (this.game.getWindowHeight() - centerY - this.getHeight()) +
-          "px"; // bola se mexe do centro para baixo aleatoriamente
+          "px";
       } else {
         // Fim do jogo
         this.centerBall();
@@ -316,15 +352,10 @@ class Ball {
   }
 
   addClickListener() {
-    this.ballElement.addEventListener("click", () => {
-      this.getBigger(2);
-    });
+    this.ballElement.addEventListener("click", () => this.getBigger(2));
   }
 }
 
 const game = new Game();
-const ball = new Ball("ball-button", game);
 game.startGame();
 game.getNextLevel();
-ball.addClickListener();
-ball.addHoverListener();

@@ -98,28 +98,20 @@ div#game {
   background-color: #fff;
 }
 .left {
-  position: absolute;
   width: 50%;
-  left: 0;
   height: 0.2rem;
 }
 .right {
-  position: absolute;
   width: 50%;
-  right: 0;
   height: 0.2rem;
 }
 .top {
-  position: absolute;
   width: 0.2rem;
   height: 50%;
-  top: 0;
 }
 .bottom {
-  position: absolute;
   width: 0.2rem;
   height: 50%;
-  bottom: 0;
 }
 .two {
   position: absolute;
@@ -169,11 +161,10 @@ div.pass_level button:hover {
 }
 button.button {
   font-size: 10px;
-  margin-bottom: 3.1rem;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
   border: none;
   border-radius: 50%;
   background-color: #fff;
