@@ -217,14 +217,28 @@ button.button span#ball_height {
 }
 div.timer {
   display: flex;
-  gap: 1rem;
+  flex-direction: column;
   position: absolute;
   right: 18rem;
   bottom: 6rem;
 }
+div.timer div.time_div {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+}
 div.timer h2:first-child {
   letter-spacing: 0.1rem;
 }
+
+div.timer p.max_time_level {
+  font-size: 20px;
+}
+div.timer span.max_time_level {
+  font-size: 24px;
+  color: var(--azul);
+}
+
 p#width_point,
 p#height_point,
 h2#time,

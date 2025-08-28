@@ -22,11 +22,11 @@ class Game {
 
     this.level = { 1: 48, 2: 50, 3: 54, 4: 64, 5: 74 };
     this.select_dev_mode = document.getElementById("select_dev_mode");
-    this.select_dev_mode_array = [];
 
     this.dev_mode_div = document.querySelector(".dev_mode_div");
     this.dev_mode_div.style.display = "none";
 
+    this.max_time_level = document.getElementById("max_time_level");
     this.timer = 0;
     this.seconds = [60, 45, 20, 15];
     this.current_level = document.getElementById("current_level");
@@ -56,11 +56,11 @@ class Game {
         5: "Boaa você ganhou!!",
       },
       lost: {
-        1: "Acabou o tempo, mas tenta ser mais rápido na próxima beleza!!",
-        2: "",
-        3: "",
-        4: "",
-        5: "",
+        1: "Acabou o tempo, mas você ainda está apredendo eu sei (:",
+        2: "Tenta denovo, você foi bem dessa vez!",
+        3: "Caramba você já ta no meio do game??!!",
+        4: "Puts cara, faltava só um Level :(",
+        5: "Nãaaaoo, bem no último Level acabou o tempo??!!",
       },
     };
 
@@ -73,10 +73,28 @@ class Game {
     const levelKeys = Object.keys(this.level); // pega as chaves do objeto level
 
     levelKeys.forEach((key) => {
-      const newOption = document.createElement("option");
-      newOption.value = key;
-      newOption.text = "Level " + key;
-      this.select_dev_mode.appendChild(newOption);
+      const Option = document.createElement("option");
+      Option.value = key;
+      Option.text = "Level " + key;
+      this.select_dev_mode.appendChild(Option);
+    });
+
+    this.select_dev_mode.addEventListener("change", (e) => {
+      const optionSelected = parseInt(e.target.value); // Pega a <option> selecionada
+
+      if (this.level[optionSelected]) {
+        // 1. Pega o valor do <option> selecionado (ex: 2, 3 etc.).
+        // 2. Verifica se existe esse level no objeto this.level.
+        // 3. Faz a bolinha crescer até o tamanho do level escolhido.
+        // 4. Atualiza o número do nível (current_level).
+        // 5. Ativa a cross certa (passLevel()).
+        // 6. Reinicia o tempo.
+
+        this.ball.getBigger(this.level[optionSelected] - this.ball.getHeight());
+        this.setCurrentLevel(optionSelected);
+        this.passLevel();
+        this.restartTime(document.getElementById("time"));
+      }
     });
   }
 
@@ -84,6 +102,10 @@ class Game {
     this.jogar_btn.addEventListener("click", () => {
       this.isPlaying = true;
       alert(this.msg_levels.start);
+
+      // Mostra o tempo máximo do Level 1
+      this.max_time_level.innerText = this.seconds[this.getCurrentLevel() - 1];
+      this.getNextLevel();
       this.startTime();
       this.game_div.style.display = "flex";
       this.menu_div.style.display = "none";
@@ -180,6 +202,9 @@ class Game {
     if (this.ball) {
       this.ball.centerBall();
     }
+
+    // Diz o tempo máximo do level atual
+    this.max_time_level.innerText = this.seconds[this.getCurrentLevel() - 1];
   }
 
   startTime() {
@@ -266,6 +291,8 @@ class Ball {
     this.height = parseInt(this.style.height);
     this.fontSize = parseInt(this.style.fontSize);
     this.defaultText = "";
+    this.delays = { 1: 450, 2: 400, 3: 250, 4: 250, 5: 200 };
+    this.canMove = true; // flag para controlar o tempo de alteração de posição
     this.hasWon = false;
 
     // Inicializa tamanho e centraliza
@@ -352,14 +379,16 @@ class Ball {
 
   addHoverListener() {
     this.ballElement.addEventListener("mouseover", () => {
-      if (this.hasWon) return; // não se move após ganhar
+      if (this.hasWon || !this.canMove) return; // não se move após ganhar
 
-      const centerX = (this.game.getWindowWidth() - this.getWidth()) / 2;
-      const centerY = (this.game.getWindowHeight() - this.getHeight()) / 2;
-      const h = this.getHeight();
+      this.canMove = false;
 
-      this.game.current_height_span.innerText = h;
-      this.game.ball_height_span.innerText = h;
+      const centerX = (this.game.getWindowWidth() - this.getWidth()) / 2; // Pego o centro horizontalmente
+      const centerY = (this.game.getWindowHeight() - this.getHeight()) / 2; // Pego o centro verticalmente
+      const h = this.getHeight(); // Pego a altura (h)
+
+      this.game.current_height_span.innerText = h; // Texto da altura atual é igual a altura atual da bolinha
+      this.game.ball_height_span.innerText = h; // Texto da bolinha é igual a altura atual da bolinha
 
       if (h < this.game.level[2]) {
         // Nível 1 - esquerda
@@ -383,8 +412,14 @@ class Ball {
           "px";
       } else {
         // Fim do jogo
-        this.centerBall();
+        this.centerBall(); // Centralizo a bolinha
       }
+
+      // Define tempo de "resposta" conforme o level (mais baixo = mais lento)
+      setTimeout(
+        () => (this.canMove = true),
+        this.delays[this.game.getCurrentLevel()]
+      );
     });
   }
 
@@ -395,4 +430,3 @@ class Ball {
 
 const game = new Game();
 game.startGame();
-game.getNextLevel();
