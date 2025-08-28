@@ -43,7 +43,7 @@ div#menu {
   width: 40rem;
   height: 30rem;
   background-color: rgb(194, 194, 194);
-  box-shadow: 8px 10px 10px #7c7c7c;
+  box-shadow: 5px 5px 20px #7c7c7c;
   flex-direction: column;
   justify-content: start;
   align-items: center;
@@ -53,6 +53,9 @@ div#menu #menu_title {
   display: flex;
   align-items: center;
   margin-left: 2rem;
+}
+div#menu #menu_title h1 {
+  text-shadow: 4px 4px 10px #000;
 }
 div#menu #menu_title img {
   position: relative;
