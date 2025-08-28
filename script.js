@@ -4,6 +4,7 @@ class Game {
     this.game_div = document.getElementById("game");
 
     this.isPlaying = false;
+
     this.jogar_btn = document.getElementById("jogar");
     this.config_btn = document.getElementById("config");
     this.sair_menu_btn = document.getElementById("sair_menu");
@@ -19,9 +20,13 @@ class Game {
       alert("Função em produção..");
     });
 
-    this.level = { 1: 48, 2: 50, 3: 56, 4: 64, 5: 74 };
+    this.level = { 1: 48, 2: 50, 3: 54, 4: 64, 5: 74 };
+    this.select_dev_mode = document.getElementById("select_dev_mode");
+    this.select_dev_mode_array = [];
 
-    this.last_level = 1;
+    this.dev_mode_div = document.querySelector(".dev_mode_div");
+    this.dev_mode_div.style.display = "none";
+
     this.timer = 0;
     this.seconds = [60, 45, 20, 15];
     this.current_level = document.getElementById("current_level");
@@ -62,6 +67,19 @@ class Game {
     this.ball = new Ball("ball-button", this);
   }
 
+  // Popula o select do Dev Mode
+  DevMode() {
+    this.select_dev_mode.innerHTML = ""; // limpa qualquer option antiga
+    const levelKeys = Object.keys(this.level); // pega as chaves do objeto level
+
+    levelKeys.forEach((key) => {
+      const newOption = document.createElement("option");
+      newOption.value = key;
+      newOption.text = "Level " + key;
+      this.select_dev_mode.appendChild(newOption);
+    });
+  }
+
   startGame() {
     this.jogar_btn.addEventListener("click", () => {
       this.isPlaying = true;
@@ -71,6 +89,10 @@ class Game {
       this.menu_div.style.display = "none";
       this.sair_game_btn.style.display = "block";
       this.quitGame();
+
+      this.dev_mode_div.style.display = "flex"; // div do select dev mode aparece
+      this.DevMode();
+      // Agora cria as opções no select
     });
   }
 
@@ -294,10 +316,8 @@ class Ball {
 
     if (this.getHeight() >= this.game.level[1]) this.setFontSize(14);
     if (this.getHeight() >= this.game.level[3]) this.setFontSize(17);
-    if (this.getHeight() >= this.game.level[4]) {
-      this.setFontSize(20);
-      this.win();
-    }
+    if (this.getHeight() >= this.game.level[4]) this.setFontSize(20);
+    if (this.getHeight() >= this.game.level[5]) this.win();
 
     setTimeout(() => {
       this.defaultText = this.getHeight(); // Texto padrão se torna a altura da bolinha
