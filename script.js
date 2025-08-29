@@ -7,17 +7,14 @@ class Game {
 
     this.jogar_btn = document.getElementById("jogar");
     this.config_btn = document.getElementById("config");
-    this.sair_menu_btn = document.getElementById("sair_menu");
     this.sair_game_btn = document.getElementById("sair_game");
     this.sair_game_btn.style.display = "none";
+    this.visit_div = document.querySelector(".visit");
     this.menu_div.style.display = "flex";
     this.game_div.style.display = "none";
     this.input_name = document.getElementById("nome");
 
     this.config_btn.addEventListener("click", () => {
-      alert("Função em produção..");
-    });
-    this.sair_menu_btn.addEventListener("click", () => {
       alert("Função em produção..");
     });
 
@@ -28,13 +25,16 @@ class Game {
     this.dev_mode_div.style.display = "none";
 
     this.max_time_level = document.getElementById("max_time_level");
+    this.max_time_level_p_tag = document.querySelector(".max_time_level");
     this.timer = 0;
     this.seconds = [60, 45, 20, 15];
     this.current_level = document.getElementById("current_level");
     this.current_height_span = document.getElementById("current_height");
     this.ball_height_span = document.getElementById("ball_height");
     this.next_level = document.getElementById("next_level");
+    this.next_level_p_tag = document.getElementById("p_tag_next_level");
     this.p_level = document.getElementById("p_tag_level");
+    this.hasWon = false;
 
     this.window_width = window.innerWidth;
     this.window_height = window.innerHeight;
@@ -112,11 +112,12 @@ class Game {
     this.jogar_btn.addEventListener("click", () => {
       this.isPlaying = true;
 
-      if (this.getUsername() !== "dev") {
-        return;
+      this.visit_div.style.display = "none";
+
+      if (this.getUsername() == "dev") {
+        this.dev_mode_div.style.display = "flex"; // div do select dev mode aparece
+        this.DevMode();
       }
-      this.dev_mode_div.style.display = "flex"; // div do select dev mode aparece
-      this.DevMode();
 
       alert(this.msg_levels.start());
 
@@ -143,6 +144,13 @@ class Game {
         location.reload();
       });
     }
+  }
+
+  win() {
+    if (this.hasWon) return;
+    this.hasWon = true;
+    this.ball.centerBall();
+    location.reload();
   }
 
   setCurrentHeightSpan(current_height) {
@@ -206,6 +214,9 @@ class Game {
         this.bottomCross.changeColor("#44a3d5");
         this.getNextLevel();
         break;
+      case 5:
+        this.max_time_level_p_tag.style.display = "none";
+        this.next_level_p_tag.style.display = "none";
     }
 
     // Exibe alert do nível
@@ -359,7 +370,7 @@ class Ball {
     if (this.getHeight() >= this.game.level[1]) this.setFontSize(14);
     if (this.getHeight() >= this.game.level[3]) this.setFontSize(17);
     if (this.getHeight() >= this.game.level[4]) this.setFontSize(20);
-    if (this.getHeight() >= this.game.level[5]) this.win();
+    if (this.getHeight() >= this.game.level[5]) this.game.win();
 
     setTimeout(() => {
       this.defaultText = this.getHeight(); // Texto padrão se torna a altura da bolinha
@@ -381,15 +392,6 @@ class Ball {
       this.game.passLevel(); // muda a cross, centraliza bola etc
       this.game.restartTime(document.getElementById("time")); // reinicia tempo
     }
-  }
-
-  win() {
-    if (this.hasWon) return;
-    this.hasWon = true;
-    this.ballElement.innerText = "Parabéns você ganhou!";
-    this.setHeight(200);
-    this.setWidth(200);
-    this.centerBall();
   }
 
   addHoverListener() {

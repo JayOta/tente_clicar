@@ -20,16 +20,27 @@ body {
 input#nome {
   min-width: 17.5rem;
   max-width: 17.5rem;
-  min-height: 1.5rem;
-  max-height: 1.5rem;
-  outline: none;
-  border: none;
-  border-radius: 2px;
-  box-shadow: 1px 1px 12px #09171e;
+  min-height: 3.5rem;
+  max-height: 3.5rem;
+  box-shadow: 4px 4px 10px #7c7c7c;
+  border: 4px solid var(--azul);
+  border-radius: 5px;
   color: var(--azul);
+  font-size: 22px;
+  outline: none;
+  transition: 0.2s ease-in-out;
+}
+input#nome:hover,
+input#nome:focus {
+  box-shadow: 4px 4px 15px #7c7c7c;
 }
 input#nome::placeholder {
-  color: var(--cinza);
+  position: relative;
+  left: 2rem;
+  top: 0.2rem;
+  font-size: 22px;
+  color: #141414;
+  opacity: 0.5;
 }
 
 div.side_actions {
@@ -251,6 +262,18 @@ div.timer p.max_time_level {
 }
 div.timer span.max_time_level {
   font-size: 24px;
+  color: var(--azul);
+}
+
+div.visit {
+  position: absolute;
+  bottom: 2rem;
+}
+div.visit h2 {
+  font-size: 20px;
+}
+div.visit a {
+  text-decoration: underline;
   color: var(--azul);
 }
 
