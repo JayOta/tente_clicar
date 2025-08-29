@@ -17,6 +17,21 @@ body {
   font-family: "Roboto", sans-serif;
 }
 
+input#nome {
+  min-width: 17.5rem;
+  max-width: 17.5rem;
+  min-height: 1.5rem;
+  max-height: 1.5rem;
+  outline: none;
+  border: none;
+  border-radius: 2px;
+  box-shadow: 1px 1px 12px #09171e;
+  color: var(--azul);
+}
+input#nome::placeholder {
+  color: var(--cinza);
+}
+
 div.side_actions {
   display: flex;
   flex-direction: column;

@@ -12,6 +12,7 @@ class Game {
     this.sair_game_btn.style.display = "none";
     this.menu_div.style.display = "flex";
     this.game_div.style.display = "none";
+    this.input_name = document.getElementById("nome");
 
     this.config_btn.addEventListener("click", () => {
       alert("Função em produção..");
@@ -48,7 +49,11 @@ class Game {
     this.bottomCross = new Cross("bottom");
 
     this.msg_levels = {
-      start: `Tente clicar no botão em até ${this.seconds[0]} segundos!!`,
+      start: () =>
+        // Função é chamada apenas quando for usada, e não já no construtor
+        `Tente clicar no botão em até ${
+          this.seconds[0]
+        } segundos ${this.getUsername()}!!`,
       win: {
         2: "Bora pro Nível 2!!",
         3: "Você é bom hein, Nível 3 então!!",
@@ -65,6 +70,11 @@ class Game {
     };
 
     this.ball = new Ball("ball-button", this);
+  }
+
+  getUsername() {
+    const name = this.input_name.value.trim().toLowerCase();
+    return name;
   }
 
   // Popula o select do Dev Mode
@@ -101,7 +111,14 @@ class Game {
   startGame() {
     this.jogar_btn.addEventListener("click", () => {
       this.isPlaying = true;
-      alert(this.msg_levels.start);
+
+      if (this.getUsername() !== "dev") {
+        return;
+      }
+      this.dev_mode_div.style.display = "flex"; // div do select dev mode aparece
+      this.DevMode();
+
+      alert(this.msg_levels.start());
 
       // Mostra o tempo máximo do Level 1
       this.max_time_level.innerText = this.seconds[this.getCurrentLevel() - 1];
@@ -112,8 +129,6 @@ class Game {
       this.sair_game_btn.style.display = "block";
       this.quitGame();
 
-      this.dev_mode_div.style.display = "flex"; // div do select dev mode aparece
-      this.DevMode();
       // Agora cria as opções no select
     });
   }
