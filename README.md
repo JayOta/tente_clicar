@@ -7,5 +7,5 @@
 <ul> 
   <li>Fases</li>
   <li>Timer</li>
-  <li>Visualização de width, height com DOM</li>
+  <li>DOM</li>
 </ul>
