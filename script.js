@@ -320,6 +320,7 @@ class Ball {
     this.delays = { 1: 450, 2: 400, 3: 250, 4: 250, 5: 200 };
     this.canMove = true; // flag para controlar o tempo de alteração de posição
     this.hasWon = false;
+    this.isLocked = false;
 
     // Inicializa tamanho e centraliza
     this.setWidth(3 * 16); // 3rem = 16px * 3
@@ -354,6 +355,32 @@ class Ball {
     return this.height;
   }
 
+  getRandomDirection(direction) {
+    const centerX = (this.game.getWindowWidth() - this.getWidth()) / 2; // Pego o centro horizontalmente
+    const centerY = (this.game.getWindowHeight() - this.getHeight()) / 2; // Pego o centro verticalmente
+
+    switch (direction) {
+      case "left": // Nível 1
+        return (this.ballElement.style.left = Math.random() * centerX + "px");
+      case "right": // Nível 2
+        return (this.ballElement.style.left =
+          centerX +
+          Math.random() *
+            (this.game.getWindowWidth() - centerX - this.getWidth()) +
+          "px");
+      case "top": // Nível 3
+        return (this.ballElement.style.top = Math.random() * centerY + "px");
+      case "bottom": // Nível 4
+        return (this.ballElement.style.top =
+          centerY +
+          Math.random() *
+            (this.game.getWindowHeight() - centerY - this.getHeight()) +
+          "px");
+      default:
+        return "";
+    }
+  }
+
   centerBall() {
     const centerX = (this.game.getWindowWidth() - this.getWidth()) / 2;
     const centerY = (this.game.getWindowHeight() - this.getHeight()) / 2;
@@ -363,24 +390,39 @@ class Ball {
   }
 
   morePoints() {
-    if (this.ballElement.innerText === "+2 Points") return;
+    if (this.isLocked) return;
 
+    this.isLocked = true; // bloqueia até liberar
+    this.lockClicks();
     this.ballElement.innerText = "+2 Points";
 
-    if (this.getHeight() >= this.game.level[1]) this.setFontSize(14);
-    if (this.getHeight() >= this.game.level[3]) this.setFontSize(17);
-    if (this.getHeight() >= this.game.level[4]) this.setFontSize(20);
-    if (this.getHeight() >= this.game.level[5]) this.game.win();
+    if (this.getHeight() >= this.game.level[1]) {
+      this.setFontSize(14);
+    }
+    if (this.getHeight() >= this.game.level[3]) {
+      this.setFontSize(17);
+    }
+    if (this.getHeight() >= this.game.level[4]) {
+      this.setFontSize(20);
+    }
+    if (this.getHeight() >= this.game.level[5]) {
+      this.game.win();
+    }
 
+    // Depois de 1s, volta ao valor padrão e libera o clique novamente
     setTimeout(() => {
       this.defaultText = this.getHeight(); // Texto padrão se torna a altura da bolinha
       this.ballElement.innerText = this.defaultText; // Texto padrão HTML se torna a altura da bolinha
+      this.isLocked = false; // destrava
+      this.unlockClicks();
     }, 1000); // a cada 1 segundo
   }
 
   getBigger(size) {
+    if (this.isLocked) return;
     this.setHeight(this.getHeight() + size);
     this.setWidth(this.getWidth() + size);
+    this.centerBall();
     this.morePoints();
 
     // Verifica se passou de nível
@@ -400,8 +442,6 @@ class Ball {
 
       this.canMove = false;
 
-      const centerX = (this.game.getWindowWidth() - this.getWidth()) / 2; // Pego o centro horizontalmente
-      const centerY = (this.game.getWindowHeight() - this.getHeight()) / 2; // Pego o centro verticalmente
       const h = this.getHeight(); // Pego a altura (h)
 
       this.game.current_height_span.innerText = h; // Texto da altura atual é igual a altura atual da bolinha
@@ -409,24 +449,16 @@ class Ball {
 
       if (h < this.game.level[2]) {
         // Nível 1 - esquerda
-        this.ballElement.style.left = Math.random() * centerX + "px";
+        this.getRandomDirection("left");
       } else if (h >= this.game.level[2] && h < this.game.level[3]) {
         // Nível 2 - direita
-        this.ballElement.style.left =
-          centerX +
-          Math.random() *
-            (this.game.getWindowWidth() - centerX - this.getWidth()) +
-          "px";
+        this.getRandomDirection("right");
       } else if (h >= this.game.level[3] && h < this.game.level[4]) {
         // Nível 3 - para cima
-        this.ballElement.style.top = Math.random() * centerY + "px";
+        this.getRandomDirection("top");
       } else if (h >= this.game.level[4] && h < this.game.level[5]) {
         // Nível 4 - para baixo
-        this.ballElement.style.top =
-          centerY +
-          Math.random() *
-            (this.game.getWindowHeight() - centerY - this.getHeight()) +
-          "px";
+        this.getRandomDirection("bottom");
       } else {
         // Fim do jogo
         this.centerBall(); // Centralizo a bolinha
@@ -442,6 +474,14 @@ class Ball {
 
   addClickListener() {
     this.ballElement.addEventListener("click", () => this.getBigger(2));
+    this.ballElement.addEventListener("click", this.handleClick);
+  }
+  lockClicks() {
+    this.ballElement.removeEventListener("click", this.handleClick);
+  }
+
+  unlockClicks() {
+    this.ballElement.addEventListener("click", this.handleClick);
   }
 }
 
